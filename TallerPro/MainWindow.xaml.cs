@@ -26,9 +26,9 @@ namespace TallerPro
             DatabaseConnection db = new DatabaseConnection();
 
             if (db.TestConnection())
-                MessageBox.Show("✅ Conexión exitosa a la base de datos.");
+                MessageBox.Show("✅ La conexion fue bregada.");
             else
-                MessageBox.Show("❌ Error al conectar con la base de datos.");
+                MessageBox.Show("❌ Error al bregar la conexion.");
         }
     }
 }
