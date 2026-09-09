@@ -1,0 +1,375 @@
+<Page x:Class="TallerPro.Views.ClientesView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Clientes"
+      Background="#F1F3F9">
+
+    <Page.Resources>
+
+        <!-- ===================== PALETA DE COLORES ===================== -->
+        <SolidColorBrush x:Key="ColorTextoOscuro"  Color="#1F2937"/>
+        <SolidColorBrush x:Key="ColorTextoSuave"   Color="#6B7280"/>
+        <SolidColorBrush x:Key="ColorBorde"        Color="#E5E7EB"/>
+        <SolidColorBrush x:Key="ColorFilaAlterna"  Color="#F8FAFC"/>
+        <SolidColorBrush x:Key="ColorSeleccion"    Color="#E8ECFE"/>
+        <SolidColorBrush x:Key="ColorAccentoMorado" Color="#6366F1"/>
+        <SolidColorBrush x:Key="ColorAccentoVerde"  Color="#10B981"/>
+
+        <!-- Gradiente del encabezado -->
+        <LinearGradientBrush x:Key="GradienteEncabezado" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#4F46E5" Offset="0"/>
+            <GradientStop Color="#4338CA" Offset="0.5"/>
+            <GradientStop Color="#312E81" Offset="1"/>
+        </LinearGradientBrush>
+
+        <!-- ===================== ETIQUETA DE CAMPO ===================== -->
+        <Style x:Key="EtiquetaCampo" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource ColorTextoSuave}"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+        </Style>
+
+        <!-- ===================== CAJA DE TEXTO ESTÁNDAR ===================== -->
+        <Style x:Key="CajaTexto" TargetType="TextBox">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="BorderBrush" Value="{StaticResource ColorBorde}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="{StaticResource ColorTextoOscuro}"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Margin="{TemplateBinding Padding}"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="{StaticResource ColorAccentoMorado}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ===================== BOTONES DE ACCIÓN (estilo pastel) ===================== -->
+        <Style x:Key="BotonPastel" TargetType="Button">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Padding" Value="18,0"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.85"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.7"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="BotonGuardar" TargetType="Button" BasedOn="{StaticResource BotonPastel}">
+            <Setter Property="Background" Value="#C7D2FE"/>
+            <Setter Property="Foreground" Value="#3730A3"/>
+        </Style>
+
+        <Style x:Key="BotonLimpiar" TargetType="Button" BasedOn="{StaticResource BotonPastel}">
+            <Setter Property="Background" Value="#E5E7EB"/>
+            <Setter Property="Foreground" Value="#374151"/>
+        </Style>
+
+        <Style x:Key="BotonEliminar" TargetType="Button" BasedOn="{StaticResource BotonPastel}">
+            <Setter Property="Background" Value="#FECACA"/>
+            <Setter Property="Foreground" Value="#B91C1C"/>
+        </Style>
+
+        <Style x:Key="BotonBuscar" TargetType="Button" BasedOn="{StaticResource BotonPastel}">
+            <Setter Property="Background" Value="{StaticResource ColorAccentoVerde}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Margin" Value="10,0,0,0"/>
+        </Style>
+
+        <!-- ===================== DATAGRID ===================== -->
+        <Style x:Key="TablaClientes" TargetType="DataGrid">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="RowHeight" Value="44"/>
+            <Setter Property="GridLinesVisibility" Value="None"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="AlternatingRowBackground" Value="{StaticResource ColorFilaAlterna}"/>
+            <Setter Property="RowBackground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="VerticalGridLinesBrush" Value="Transparent"/>
+            <Setter Property="CanUserResizeRows" Value="False"/>
+        </Style>
+
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#1F2937"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="14,12"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        </Style>
+
+        <Style TargetType="DataGridRow">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource ColorSeleccion}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="DataGridCell">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="14,0"/>
+            <Setter Property="Foreground" Value="{StaticResource ColorTextoOscuro}"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Foreground" Value="{StaticResource ColorTextoOscuro}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+    </Page.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- ===================== ENCABEZADO ===================== -->
+            <Border Grid.Row="0"
+                    Background="{StaticResource GradienteEncabezado}"
+                    CornerRadius="14"
+                    Padding="28,22"
+                    Margin="0,0,0,20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Clientes"
+                                   FontSize="30"
+                                   FontWeight="Bold"
+                                   Foreground="White"/>
+                        <TextBlock Text="Registro y seguimiento de los clientes del taller"
+                                   FontSize="13"
+                                   Foreground="#D6D9FF"
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <Border Grid.Column="1"
+                            Background="#33FFFFFF"
+                            CornerRadius="20"
+                            Padding="16,8"
+                            VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Clientes.Count}"
+                                       FontWeight="Bold"
+                                       Foreground="White"
+                                       Margin="0,0,6,0"/>
+                            <TextBlock Text="registrados"
+                                       Foreground="White"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- ===================== FORMULARIO (Nuevo / Editar) ===================== -->
+            <Border Grid.Row="1"
+                    Background="White"
+                    CornerRadius="12"
+                    Margin="0,0,0,20"
+                    BorderBrush="{StaticResource ColorBorde}"
+                    BorderThickness="1,1,1,1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0"
+                            Background="{StaticResource ColorAccentoMorado}"
+                            CornerRadius="12,0,0,12"/>
+
+                    <StackPanel Grid.Column="1" Margin="24,22,24,22">
+
+                        <!-- Fila 1: Nombre / Apellido / Teléfono -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Nombre" Style="{StaticResource EtiquetaCampo}"/>
+                                <TextBox Style="{StaticResource CajaTexto}"
+                                         Text="{Binding Nombre, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Apellido" Style="{StaticResource EtiquetaCampo}"/>
+                                <TextBox Style="{StaticResource CajaTexto}"
+                                         Text="{Binding Apellido, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="4">
+                                <TextBlock Text="Teléfono" Style="{StaticResource EtiquetaCampo}"/>
+                                <TextBox Style="{StaticResource CajaTexto}"
+                                         Text="{Binding Telefono, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Fila 2: Email -->
+                        <Grid Margin="0,16,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Correo electrónico" Style="{StaticResource EtiquetaCampo}"/>
+                                <TextBox Style="{StaticResource CajaTexto}"
+                                         Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Botones -->
+                        <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+                            <Button Content="💾 Guardar"
+                                    Width="130"
+                                    Style="{StaticResource BotonGuardar}"
+                                    Command="{Binding GuardarCommand}"/>
+                            <Button Content="↺ Limpiar"
+                                    Width="120"
+                                    Style="{StaticResource BotonLimpiar}"
+                                    Command="{Binding LimpiarCommand}"/>
+                            <Button Content="🗑 Eliminar"
+                                    Width="120"
+                                    Style="{StaticResource BotonEliminar}"
+                                    Command="{Binding EliminarCommand}"
+                                    IsEnabled="{Binding HayClienteSeleccionado}"/>
+                        </StackPanel>
+
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- ===================== BÚSQUEDA + TABLA ===================== -->
+            <Border Grid.Row="2"
+                    Background="White"
+                    CornerRadius="12"
+                    BorderBrush="{StaticResource ColorBorde}"
+                    BorderThickness="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Column="0"
+                            Grid.RowSpan="2"
+                            Background="{StaticResource ColorAccentoVerde}"
+                            CornerRadius="12,0,0,12"/>
+
+                    <!-- Barra de búsqueda -->
+                    <StackPanel Grid.Row="0" Grid.Column="1" Margin="24,22,24,16">
+                        <TextBlock Text="Buscar cliente" Style="{StaticResource EtiquetaCampo}"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox Grid.Column="0"
+                                     Style="{StaticResource CajaTexto}"
+                                     Text="{Binding TextoBusqueda, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <Button Grid.Column="1"
+                                    Content="🔍 Buscar"
+                                    Width="120"
+                                    Style="{StaticResource BotonBuscar}"
+                                    Command="{Binding BuscarCommand}"/>
+                        </Grid>
+                    </StackPanel>
+
+                    <!-- Tabla -->
+                    <DataGrid Grid.Row="1" Grid.Column="1"
+                              Margin="0,0,0,0"
+                              MinHeight="240"
+                              ItemsSource="{Binding Clientes}"
+                              SelectedItem="{Binding ClienteSeleccionado}"
+                              Style="{StaticResource TablaClientes}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserAddRows="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Id"
+                                                Binding="{Binding IdCliente}"
+                                                Width="70"/>
+                            <DataGridTextColumn Header="Nombre"
+                                                Binding="{Binding Nombre}"
+                                                Width="*"/>
+                            <DataGridTextColumn Header="Apellido"
+                                                Binding="{Binding Apellido}"
+                                                Width="*"/>
+                            <DataGridTextColumn Header="Teléfono"
+                                                Binding="{Binding Telefono}"
+                                                Width="*"/>
+                            <DataGridTextColumn Header="Correo"
+                                                Binding="{Binding Email}"
+                                                Width="2*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+
+        </Grid>
+    </ScrollViewer>
+</Page>
