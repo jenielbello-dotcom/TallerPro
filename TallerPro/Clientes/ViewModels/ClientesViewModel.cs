@@ -6,10 +6,10 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
-using TallerPro.Service;
-using TallerPro.Services;
+using TallerPro.Clientes.Service;
+using TallerPro.Clientes.ViewModels;
 
-namespace TallerPro.ViewModels
+namespace TallerPro.Clientes.ViewModels
 {
     public class ClienteViewModel : INotifyPropertyChanged
     {

@@ -1,8 +1,7 @@
 using Microsoft.Data.SqlClient;
 using TallerPro.Data;
-using TallerPro.Service;
 
-namespace TallerPro.Services
+namespace TallerPro.Clientes.Service
 {
     public class ClienteService
     {
@@ -137,6 +136,57 @@ namespace TallerPro.Services
 
             connection.Open();
             command.ExecuteNonQuery();
+        }
+
+        // ============================================================
+        // BUSCAR CLIENTES PARA AUTOCOMPLETADO
+        // ============================================================
+        public List<Cliente> BuscarClientes(string texto)
+        {
+            List<Cliente> clientes = new List<Cliente>();
+
+            string query = @"
+        SELECT TOP 10
+            IdCliente,
+            Nombre,
+            Apellido,
+            Telefono,
+            Email
+        FROM Clientes
+        WHERE
+            Nombre LIKE @Texto
+            OR Apellido LIKE @Texto
+            OR CONCAT(Nombre, ' ', Apellido) LIKE @Texto
+        ORDER BY Nombre, Apellido";
+
+            using SqlConnection connection = databaseConnection.GetConnection();
+            using SqlCommand command = new SqlCommand(query, connection);
+
+            command.Parameters.AddWithValue("@Texto", texto + "%");
+
+            connection.Open();
+
+            using SqlDataReader reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                Cliente cliente = new Cliente
+                {
+                    IdCliente = reader.GetInt32(reader.GetOrdinal("IdCliente")),
+                    Nombre = reader.GetString(reader.GetOrdinal("Nombre")),
+                    Apellido = reader.GetString(reader.GetOrdinal("Apellido")),
+                    Telefono = reader.IsDBNull(reader.GetOrdinal("Telefono"))
+                        ? null
+                        : reader.GetString(reader.GetOrdinal("Telefono")),
+                    Email = reader.IsDBNull(reader.GetOrdinal("Email"))
+                        ? null
+                        : reader.GetString(reader.GetOrdinal("Email"))
+                };
+
+                clientes.Add(cliente);
+            }
+
+            return clientes;
         }
     }
 }

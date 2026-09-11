@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Input;
 
-namespace TallerPro.ViewModels
+namespace TallerPro.Clientes.ViewModels
 {
     /// <summary>
     /// Implementación genérica de ICommand para enlazar métodos del

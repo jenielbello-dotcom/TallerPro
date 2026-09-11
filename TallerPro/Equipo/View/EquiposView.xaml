@@ -1,0 +1,606 @@
+﻿<Window x:Class="TallerPro.Equipo.View.EquiposView"
+     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+     xmlns:local="clr-namespace:TallerPro.Equipo.View"
+     mc:Ignorable="d"
+     Title="Gestión de Equipos"
+     Height="760"
+     Width="1080"
+     MinHeight="640"
+     MinWidth="900"
+     Background="#F1F5F9"
+     WindowStartupLocation="CenterScreen">
+
+    
+    <Window.Resources>
+
+        <!-- ===================== COLORES ===================== -->
+        <SolidColorBrush x:Key="TextoPrincipal" Color="#1E293B"/>
+        <SolidColorBrush x:Key="TextoSecundario" Color="#64748B"/>
+        <SolidColorBrush x:Key="Borde" Color="#E2E8F0"/>
+
+        <LinearGradientBrush x:Key="HeaderBrush"
+                         StartPoint="0,0"
+                         EndPoint="1,1">
+            <GradientStop Color="#4338CA" Offset="0"/>
+            <GradientStop Color="#7E22CE" Offset="1"/>
+        </LinearGradientBrush>
+
+        <LinearGradientBrush x:Key="GuardarBrush"
+                         StartPoint="0,0"
+                         EndPoint="1,0">
+            <GradientStop Color="#4F46E5" Offset="0"/>
+            <GradientStop Color="#6366F1" Offset="1"/>
+        </LinearGradientBrush>
+
+        <!-- ===================== EFECTOS ===================== -->
+        <DropShadowEffect x:Key="SombraTarjeta"
+                      Color="#1E293B"
+                      BlurRadius="18"
+                      ShadowDepth="2"
+                      Opacity="0.10"/>
+
+        <DropShadowEffect x:Key="SombraFlotante"
+                      Color="#1E293B"
+                      BlurRadius="14"
+                      ShadowDepth="3"
+                      Opacity="0.18"/>
+
+        <!-- ===================== ESTILO: TARJETA ===================== -->
+        <Style x:Key="Tarjeta" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Padding" Value="24"/>
+            <Setter Property="Effect" Value="{StaticResource SombraTarjeta}"/>
+        </Style>
+
+        <!-- ===================== ESTILO: ETIQUETA ===================== -->
+        <Style x:Key="EtiquetaCampo" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextoSecundario}"/>
+            <Setter Property="Margin" Value="2,0,0,6"/>
+        </Style>
+
+        <!-- ===================== ESTILO: TEXTBOX ===================== -->
+        <!--
+        IMPORTANTE:
+        Se conserva PART_ContentHost porque es el elemento
+        que WPF utiliza para mostrar y editar el texto del TextBox.
+    -->
+        <Style x:Key="CampoTexto" TargetType="TextBox">
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="{StaticResource TextoPrincipal}"/>
+            <Setter Property="Background" Value="#F8FAFC"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Borde}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+
+                        <Border x:Name="BordeTextBox"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8"
+                            SnapsToDevicePixels="True">
+
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                      Focusable="False"
+                                      HorizontalScrollBarVisibility="Hidden"
+                                      VerticalScrollBarVisibility="Hidden"
+                                      Padding="{TemplateBinding Padding}"
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Stretch"/>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+
+                            <!-- Campo enfocado -->
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="BordeTextBox"
+                                    Property="BorderBrush"
+                                    Value="#6366F1"/>
+
+                                <Setter TargetName="BordeTextBox"
+                                    Property="Background"
+                                    Value="White"/>
+                            </Trigger>
+
+                            <!-- Campo deshabilitado -->
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="BordeTextBox"
+                                    Property="Opacity"
+                                    Value="0.55"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ===================== ESTILO: BOTÓN BASE ===================== -->
+        <Style x:Key="BotonBase" TargetType="Button">
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="Padding" Value="18,0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+
+                        <Border x:Name="Fondo"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="10">
+
+                            <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Fondo"
+                                    Property="Opacity"
+                                    Value="0.90"/>
+                            </Trigger>
+
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Fondo"
+                                    Property="Opacity"
+                                    Value="0.78"/>
+                            </Trigger>
+
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Fondo"
+                                    Property="Opacity"
+                                    Value="0.45"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="BotonGuardar"
+           TargetType="Button"
+           BasedOn="{StaticResource BotonBase}">
+            <Setter Property="Background"
+                Value="{StaticResource GuardarBrush}"/>
+        </Style>
+
+        <Style x:Key="BotonLimpiar"
+           TargetType="Button"
+           BasedOn="{StaticResource BotonBase}">
+            <Setter Property="Background"
+                Value="#E2E8F0"/>
+            <Setter Property="Foreground"
+                Value="#334155"/>
+        </Style>
+
+        <Style x:Key="BotonEliminar"
+           TargetType="Button"
+           BasedOn="{StaticResource BotonBase}">
+            <Setter Property="Background"
+                Value="#EF4444"/>
+        </Style>
+
+        <Style x:Key="BotonBuscar"
+           TargetType="Button"
+           BasedOn="{StaticResource BotonBase}">
+            <Setter Property="Background"
+                Value="#22C55E"/>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid Margin="28">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- ===================== HEADER ===================== -->
+        <Border Grid.Row="0"
+            Background="{StaticResource HeaderBrush}"
+            CornerRadius="18"
+            Padding="28,22"
+            Margin="0,0,0,20"
+            Effect="{StaticResource SombraTarjeta}">
+
+            <Grid>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0"
+                        VerticalAlignment="Center">
+
+                    <TextBlock Text="Equipos"
+                           FontSize="30"
+                           FontWeight="Bold"
+                           Foreground="White"/>
+
+                    <TextBlock Text="Gestión y registro de los equipos ingresados al taller"
+                           FontSize="14"
+                           Foreground="#E0E7FF"
+                           Margin="2,4,0,0"/>
+
+                </StackPanel>
+
+                <Border Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Background="#3B0764"
+                    Opacity="0.55"
+                    CornerRadius="18"
+                    Padding="18,8">
+
+                    <TextBlock Foreground="White"
+                           FontWeight="SemiBold"
+                           FontSize="13">
+
+                    <Run Text="{Binding TotalEquipos, Mode=OneWay}"/>
+                    <Run Text=" registrados"/>
+
+                    </TextBlock>
+
+                </Border>
+
+            </Grid>
+
+        </Border>
+
+        <!-- ===================== FORMULARIO ===================== -->
+        <Border Grid.Row="1"
+            Style="{StaticResource Tarjeta}"
+            Margin="0,0,0,16">
+
+            <Grid>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- ===================== FILA 1 ===================== -->
+
+                <!-- CLIENTE -->
+                <StackPanel Grid.Row="0"
+                        Grid.Column="0">
+
+                    <TextBlock Text="Cliente"
+                           Style="{StaticResource EtiquetaCampo}"/>
+
+                    <Grid>
+
+                        <TextBox x:Name="ClienteTextBox"
+                             Style="{StaticResource CampoTexto}"
+                             Text="{Binding ClienteNombreSeleccionado,
+                                            UpdateSourceTrigger=PropertyChanged}"
+                             TextChanged="ClienteTextBox_TextChanged"
+                             LostFocus="ClienteTextBox_LostFocus"
+                             Panel.ZIndex="1"/>
+
+                        <Border x:Name="ClientesListBoxBorder"
+                            Background="White"
+                            BorderBrush="{StaticResource Borde}"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Margin="0,42,0,0"
+                            Effect="{StaticResource SombraFlotante}"
+                            Panel.ZIndex="2"
+                            Visibility="{Binding Visibility,
+                                                 ElementName=ClientesListBox}">
+
+                            <ListBox x:Name="ClientesListBox"
+                                 BorderThickness="0"
+                                 MaxHeight="160"
+                                 Visibility="Collapsed"
+                                 ItemsSource="{Binding ClientesEncontrados}"
+                                 SelectionChanged="ClientesListBox_SelectionChanged">
+
+                                <ListBox.ItemTemplate>
+
+                                    <DataTemplate>
+
+                                        <TextBlock Padding="10,7"
+                                               FontSize="13">
+
+                                        <Run Text="{Binding Nombre}"/>
+                                        <Run Text=" "/>
+                                        <Run Text="{Binding Apellido}"/>
+
+                                        </TextBlock>
+
+                                    </DataTemplate>
+
+                                </ListBox.ItemTemplate>
+
+                            </ListBox>
+
+                        </Border>
+
+                    </Grid>
+
+                </StackPanel>
+
+                <!-- TIPO -->
+                <StackPanel Grid.Row="0"
+                        Grid.Column="2">
+
+                    <TextBlock Text="Tipo"
+                           Style="{StaticResource EtiquetaCampo}"/>
+
+                    <TextBox Style="{StaticResource CampoTexto}"
+                         Text="{Binding Tipo,
+                                        UpdateSourceTrigger=PropertyChanged}"/>
+
+                </StackPanel>
+
+                <!-- MARCA -->
+                <StackPanel Grid.Row="0"
+                        Grid.Column="4">
+
+                    <TextBlock Text="Marca"
+                           Style="{StaticResource EtiquetaCampo}"/>
+
+                    <TextBox Style="{StaticResource CampoTexto}"
+                         Text="{Binding Marca,
+                                        UpdateSourceTrigger=PropertyChanged}"/>
+
+                </StackPanel>
+
+                <!-- ===================== FILA 2 ===================== -->
+
+                <!-- MODELO -->
+                <StackPanel Grid.Row="1"
+                        Grid.Column="0"
+                        Margin="0,16,0,0">
+
+                    <TextBlock Text="Modelo"
+                           Style="{StaticResource EtiquetaCampo}"/>
+
+                    <TextBox Style="{StaticResource CampoTexto}"
+                         Text="{Binding Modelo,
+                                        UpdateSourceTrigger=PropertyChanged}"/>
+
+                </StackPanel>
+
+                <!-- NÚMERO DE SERIE -->
+                <StackPanel Grid.Row="1"
+                        Grid.Column="2"
+                        Margin="0,16,0,0">
+
+                    <TextBlock Text="Número de serie"
+                           Style="{StaticResource EtiquetaCampo}"/>
+
+                    <TextBox Style="{StaticResource CampoTexto}"
+                         Text="{Binding NumeroSerie,
+                                        UpdateSourceTrigger=PropertyChanged}"/>
+
+                </StackPanel>
+
+                <!-- DESCRIPCIÓN -->
+                <StackPanel Grid.Row="1"
+                        Grid.Column="4"
+                        Margin="0,16,0,0">
+
+                    <TextBlock Text="Descripción / Fallo"
+                           Style="{StaticResource EtiquetaCampo}"/>
+
+                    <TextBox Style="{StaticResource CampoTexto}"
+                         Text="{Binding Descripcion,
+                                        UpdateSourceTrigger=PropertyChanged}"/>
+
+                </StackPanel>
+
+                <!-- ===================== FILA 3: BOTONES ===================== -->
+                <StackPanel Grid.Row="2"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="5"
+                        Orientation="Horizontal"
+                        Margin="0,22,0,0">
+
+                    <Button Content="💾  Guardar"
+                        Style="{StaticResource BotonGuardar}"
+                        Width="150"
+                        Command="{Binding GuardarCommand}"/>
+
+                    <Button Content="♻  Limpiar"
+                        Style="{StaticResource BotonLimpiar}"
+                        Width="130"
+                        Margin="12,0,0,0"
+                        Command="{Binding LimpiarCommand}"/>
+
+                    <Button Content="🗑  Eliminar"
+                        Style="{StaticResource BotonEliminar}"
+                        Width="130"
+                        Margin="12,0,0,0"
+                        Command="{Binding EliminarCommand}"/>
+
+                </StackPanel>
+
+            </Grid>
+
+        </Border>
+
+        <!-- ===================== BÚSQUEDA ===================== -->
+        <Border Grid.Row="2"
+            Style="{StaticResource Tarjeta}"
+            Margin="0,0,0,16"
+            Padding="24,18">
+
+            <Grid>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+
+                    <TextBlock Text="Buscar equipo"
+                           Style="{StaticResource EtiquetaCampo}"/>
+
+                    <TextBox Style="{StaticResource CampoTexto}"
+                         Text="{Binding TextoBusqueda,
+                                        UpdateSourceTrigger=PropertyChanged}"/>
+
+                </StackPanel>
+
+                <Button Grid.Column="2"
+                    Content="🔍  Buscar"
+                    Style="{StaticResource BotonBuscar}"
+                    Width="140"
+                    VerticalAlignment="Bottom"
+                    Command="{Binding BuscarCommand}"/>
+
+            </Grid>
+
+        </Border>
+
+        <!-- ===================== TABLA ===================== -->
+        <Border Grid.Row="3"
+            Style="{StaticResource Tarjeta}"
+            Padding="0">
+
+            <DataGrid ItemsSource="{Binding EquiposVista}"
+                  SelectedItem="{Binding EquipoSeleccionadoEnTabla,
+                                         Mode=TwoWay}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  HeadersVisibility="Column"
+                  GridLinesVisibility="Horizontal"
+                  HorizontalGridLinesBrush="#E2E8F0"
+                  RowHeight="38"
+                  BorderThickness="0"
+                  Background="Transparent"
+                  AlternatingRowBackground="#F8FAFC"
+                  FontSize="13">
+
+                <DataGrid.Resources>
+
+                    <Style TargetType="DataGridColumnHeader">
+
+                        <Setter Property="Background"
+                            Value="#1E293B"/>
+
+                        <Setter Property="Foreground"
+                            Value="White"/>
+
+                        <Setter Property="FontWeight"
+                            Value="SemiBold"/>
+
+                        <Setter Property="Padding"
+                            Value="12,10"/>
+
+                        <Setter Property="BorderThickness"
+                            Value="0"/>
+
+                        <Setter Property="HorizontalContentAlignment"
+                            Value="Left"/>
+
+                    </Style>
+
+                    <Style TargetType="DataGridCell">
+
+                        <Setter Property="Padding"
+                            Value="12,6"/>
+
+                        <Setter Property="BorderThickness"
+                            Value="0"/>
+
+                        <Style.Triggers>
+
+                            <Trigger Property="IsSelected"
+                                 Value="True">
+
+                                <Setter Property="Background"
+                                    Value="#E0E7FF"/>
+
+                                <Setter Property="Foreground"
+                                    Value="#1E293B"/>
+
+                            </Trigger>
+
+                        </Style.Triggers>
+
+                    </Style>
+
+                </DataGrid.Resources>
+
+                <DataGrid.Columns>
+
+                    <DataGridTextColumn Header="Cliente"
+                                     Binding="{Binding NombreCliente}"
+                                     Width="1.4*"/>
+
+                    <DataGridTextColumn Header="Tipo"
+                                     Binding="{Binding Tipo}"
+                                     Width="*"/>
+
+                    <DataGridTextColumn Header="Marca"
+                                     Binding="{Binding Marca}"
+                                     Width="*"/>
+
+                    <DataGridTextColumn Header="Modelo"
+                                     Binding="{Binding Modelo}"
+                                     Width="*"/>
+
+                    <DataGridTextColumn Header="No. Serie"
+                                     Binding="{Binding NumeroSerie}"
+                                     Width="*"/>
+
+                    <DataGridTextColumn Header="Descripción"
+                                     Binding="{Binding Descripcion}"
+                                     Width="1.6*"/>
+
+                    <DataGridTextColumn Header="Registrado"
+                                     Binding="{Binding FechaRegistro,
+                                                      StringFormat={}{0:dd/MM/yyyy}}"
+                                     Width="*"/>
+
+                </DataGrid.Columns>
+
+            </DataGrid>
+
+        </Border>
+
+    </Grid>
+   
+
+</Window>

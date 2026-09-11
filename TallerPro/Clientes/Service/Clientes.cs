@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace TallerPro.Service
+namespace TallerPro.Clientes.Service
 {
     public class Cliente
     {

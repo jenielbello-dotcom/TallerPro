@@ -1,5 +1,5 @@
 using System.Windows.Controls;
-using TallerPro.ViewModels;
+using TallerPro.Clientes.ViewModels;
 
 namespace TallerPro.Views
 {
