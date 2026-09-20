@@ -1,0 +1,337 @@
+﻿<UserControl x:Class="TallerPro.Reparacion.View.ReparacionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="750" d:DesignWidth="1100"
+             Background="#F1F3F9">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <Style x:Key="RoundedInput" TargetType="TextBox">
+            <Setter Property="Padding" Value="10,7"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Template">
+
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="6">
+                            <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="RoundedDatePicker" TargetType="DatePicker">
+            <Setter Property="Padding" Value="5,4"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+            <Setter Property="Background" Value="White"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- ENCABEZADO SUPERIOR PÚRPUA -->
+        <Border Grid.Row="0" Background="#6B21A8" Padding="25,20">
+            <StackPanel>
+                <TextBlock Text="Órdenes de Reparación" FontSize="22" FontWeight="Bold" Foreground="White"/>
+                <TextBlock Text="Gestiona el diagnóstico y seguimiento de los equipos en taller" FontSize="13" Foreground="#E9D5FF" Margin="0,3,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="20,-15,20,20">
+            <StackPanel>
+
+                <!-- TARJETA 1: FORMULARIO DE NUEVA ORDEN -->
+                <Border Background="White" CornerRadius="10" Padding="20" Margin="0,0,0,20">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="12" ShadowDepth="2" Opacity="0.08" Color="Black"/>
+                    </Border.Effect>
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Text="{Binding TituloFormulario}" FontSize="16" FontWeight="Bold" Foreground="#111827" Margin="0,0,0,15"/>
+
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- COLUMNA IZQUIERDA -->
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="{Binding EtiquetaEquipo}" FontSize="11" FontWeight="Bold" Foreground="#4B5563" Margin="0,0,0,5"/>
+
+                                <!-- CAMPO Y DESPLEGABLE AUTOCOMPLETADO -->
+                                <Grid Margin="0,0,0,12">
+                                    <TextBox x:Name="TxtBusquedaEquipo" Style="{StaticResource RoundedInput}" Text="{Binding TextoEquipoBusqueda, UpdateSourceTrigger=PropertyChanged}"
+                                             IsReadOnly="{Binding EstaEditando}"/>
+
+                                    <Popup IsOpen="{Binding MostrarResultados}" 
+                                           PlacementTarget="{Binding ElementName=TxtBusquedaEquipo}" 
+                                           StaysOpen="False" PopupAnimation="Slide" AllowsTransparency="True">
+                                        <Border Background="White" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="6" Width="450" MaxHeight="220">
+                                            <Border.Effect>
+                                                <DropShadowEffect BlurRadius="8" ShadowDepth="3" Opacity="0.15" Color="Black"/>
+                                            </Border.Effect>
+
+                                            <ListBox ItemsSource="{Binding EquiposEncontrados}" BorderThickness="0" Background="Transparent">
+                                                <ListBox.ItemContainerStyle>
+                                                    <Style TargetType="ListBoxItem">
+                                                        <Setter Property="Padding" Value="0"/>
+                                                        <Setter Property="Margin" Value="0"/>
+                                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                                    </Style>
+                                                </ListBox.ItemContainerStyle>
+                                                <ListBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Button Command="{Binding DataContext.SeleccionarEquipoCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                                CommandParameter="{Binding}" Background="Transparent" BorderThickness="0" HorizontalContentAlignment="Stretch" Cursor="Hand">
+                                                            <Border Padding="10,8" BorderBrush="#F1F5F9" BorderThickness="0,0,0,1">
+                                                                <StackPanel>
+                                                                    <TextBlock Text="{Binding Marca}" FontWeight="Bold" Foreground="#1E293B"/>
+                                                                    <TextBlock Text="{Binding Modelo}" Foreground="#475569" FontSize="12"/>
+                                                                    <TextBlock Text="{Binding NombreCliente, StringFormat='Cliente: {0}'}" FontSize="11" Foreground="#2563EB" FontWeight="SemiBold"/>
+                                                                </StackPanel>
+                                                            </Border>
+                                                        </Button>
+                                                    </DataTemplate>
+                                                </ListBox.ItemTemplate>
+                                            </ListBox>
+                                        </Border>
+                                    </Popup>
+                                </Grid>
+
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="15"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- ESTADO -->
+                                    <StackPanel Grid.Column="0">
+
+                                        <!-- NUEVA ORDEN -->
+                                        <StackPanel>
+                                            <StackPanel.Style>
+                                                <Style TargetType="StackPanel">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding EstaEditando}" Value="True">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </StackPanel.Style>
+
+                                            <TextBlock Text="ESTADO INICIAL" FontSize="11"  FontWeight="Bold" Foreground="#4B5563"  
+                                                      Margin="0,0,0,5"/>
+
+                                            <TextBox Text="Recibido" IsReadOnly="True" Style="{StaticResource RoundedInput}"    Height="35"/>
+                                           
+                                        </StackPanel>
+
+                                        <!-- EDITANDO ORDEN -->
+                                        <StackPanel>
+                                            <StackPanel.Style>
+                                                <Style TargetType="StackPanel">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding EstaEditando}" Value="True">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </StackPanel.Style>
+
+                                            <TextBlock Text="ESTADO" FontSize="11"  FontWeight="Bold" Foreground="#4B5563"    Margin="0,0,0,5"/>
+                   
+                                  
+                                            <ComboBox ItemsSource="{Binding Estados}" DisplayMemberPath="NombreEstado" SelectedValuePath="IdEstado"
+                                           SelectedValue="{Binding IdEstadoSeleccionado, Mode=TwoWay}" Height="35"/>
+                                        </StackPanel>
+
+                                    </StackPanel>
+
+                                    <!-- FECHA DE RECEPCIÓN -->
+                                    <StackPanel Grid.Column="2">
+
+                                        <TextBlock Text="FECHA DE RECEPCIÓN" FontSize="11" FontWeight="Bold" Foreground="#4B5563" Margin="0,0,0,5"/>
+
+                                        <DatePicker SelectedDate="{Binding FechaRecepcion}" Height="35">
+                                            <DatePicker.Style>
+                                                <Style TargetType="DatePicker" BasedOn="{StaticResource RoundedDatePicker}">
+                                                    <Setter Property="IsEnabled" Value="True"/>
+
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding EstaEditando}" Value="True">
+                                                            <Setter Property="IsEnabled" Value="False"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </DatePicker.Style>
+                                        </DatePicker>
+
+
+                                    </StackPanel>
+
+                                </Grid>
+
+                                <!-- FECHA DE FINALIZACIÓN -->
+                                <Grid Margin="0,12,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="15"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0">
+                                        <StackPanel.Style>
+                                            <Style TargetType="StackPanel">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding EstaEditando}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+
+                                        <TextBlock Text="FECHA DE FINALIZACIÓN" FontSize="11" FontWeight="Bold" Foreground="#4B5563" Margin="0,0,0,5"/>
+                                        <DatePicker SelectedDate="{Binding FechaFinalizacion}" Height="35" Style="{StaticResource RoundedDatePicker}"/>
+                                    </StackPanel>
+                                </Grid>
+
+
+                            </StackPanel>
+
+                           
+
+                            <!-- COLUMNA DERECHA -->
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="PROBLEMA REPORTADO *" FontSize="11" FontWeight="Bold" Foreground="#4B5563" Margin="0,0,0,5"/>
+                                <TextBox Style="{StaticResource RoundedInput}" Text="{Binding ProblemaReportado, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,12"/>
+
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="15"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="DIAGNÓSTICO" FontSize="11" FontWeight="Bold" Foreground="#4B5563" Margin="0,0,0,5"/>
+                                        <TextBox Style="{StaticResource RoundedInput}" Text="{Binding Diagnostico, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="TRABAJO REALIZADO" FontSize="11" FontWeight="Bold" Foreground="#4B5563" Margin="0,0,0,5"/>
+                                        <TextBox Style="{StaticResource RoundedInput}" Text="{Binding TrabajoRealizado, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </StackPanel>
+
+                                </Grid>
+
+                                <!-- BOTONES GUARDAR Y LIMPIAR -->
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+                                    <Button Command="{Binding GuardarOrdenCommand}" Width="220" Height="38" Background="#6B21A8" Foreground="White" 
+                                            FontWeight="Bold" BorderThickness="0" Margin="0,0,10,0" Cursor="Hand">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}" CornerRadius="19">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="💾 " Foreground="White"/>
+                                            <TextBlock Text="Guardar"/>
+                                        </StackPanel>
+                                    </Button>
+
+                                    <Button Command="{Binding LimpiarFormularioCommand}" Content="Limpiar" Width="100" Height="38" 
+                                            Background="White" Foreground="#374151" BorderBrush="#D1D5DB" BorderThickness="1" Cursor="Hand">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" 
+                                                        BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="19">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <!-- TARJETA 2: TABLA DE ÓRDENES REGISTRADAS -->
+                <Border Background="White" CornerRadius="10" Padding="20">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="12" ShadowDepth="2" Opacity="0.08" Color="Black"/>
+                    </Border.Effect>
+
+                    <StackPanel>
+                        <Grid Margin="0,0,0,15">
+                            <TextBlock Text="Órdenes Registradas" FontSize="16" FontWeight="Bold" Foreground="#111827" VerticalAlignment="Center"/>
+
+                            <TextBox Width="260" HorizontalAlignment="Right" Style="{StaticResource RoundedInput}"
+                                     Text="{Binding TextoBusquedaOrden, UpdateSourceTrigger=PropertyChanged}"/>
+                        </Grid>
+
+                        <DataGrid ItemsSource="{Binding ReparacionesFiltradas}"
+                                AutoGenerateColumns="False" CanUserAddRows="False" GridLinesVisibility="Horizontal" HeadersVisibility="Column" Background="Transparent"
+                                RowHeaderWidth="0" BorderThickness="0" HorizontalGridLinesBrush="#F3F4F6">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Orden #" Binding="{Binding IdOrden}" Width="70" IsReadOnly="True"/>
+                                
+                                <DataGridTextColumn Header="Cliente" Binding="{Binding ClienteNombre}" Width="1.2*" IsReadOnly="True"/>
+                                
+                                <DataGridTextColumn Header="Equipo" Binding="{Binding EquipoDescripcion}" Width="1.2*" IsReadOnly="True"/>
+                                
+                                <DataGridTextColumn Header="Estado" Binding="{Binding EstadoNombre}" Width="130" IsReadOnly="True"/>
+                                
+                                <DataGridTextColumn Header="Fecha Recepción" Binding="{Binding FechaRecepcion, StringFormat=\{0:dd/MM/yyyy\}}" Width="110" IsReadOnly="True"/>
+                                
+                                <DataGridTextColumn Header="Problema Reportado (Resumen)" Binding="{Binding ProblemaReportado}" Width="2*" IsReadOnly="True"/>
+
+                                <DataGridTemplateColumn Header="Acción" Width="90">
+                                    
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="Editar"
+                                                   Command="{Binding DataContext.SeleccionarOrdenCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    
+                                                    CommandParameter="{Binding}" Width="65" Height="28" Background="#6B21A8" Foreground="White" BorderThickness="0" Cursor="Hand"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

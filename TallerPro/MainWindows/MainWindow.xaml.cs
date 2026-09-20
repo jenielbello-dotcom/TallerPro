@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using TallerPro.Reparacion.View;
 
 namespace TallerPro
 {
@@ -7,6 +8,8 @@ namespace TallerPro
         public MainWindow()
         {
             InitializeComponent();
+
+            Content = new ReparacionView();
         }
     }
 }
